@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employer Desk | Shahak Talent Solution</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between pb-20 md:pb-0" onclick="closeAllPopups(event)">
+
+  <!-- ================= TOP NAVBAR ================= -->
+  <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-6">
+        <a href="hiring.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-black text-base sm:text-lg shadow-sm">
+            S
+          </div>
+          <div>
+            <span class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none block">Shahak</span>
+            <span class="text-[9px] sm:text-[10px] font-bold tracking-wider text-indigo-600 uppercase">Employer Desk</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-6 font-semibold text-xs text-slate-600">
+          <button onclick="switchEmployerTab('applications')" id="navTabApps" class="text-indigo-600 font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-inbox"></i> Received Applications (<span id="receivedAppCountNav">0</span>)
+          </button>
+          <button onclick="switchEmployerTab('talent')" id="navTabTalent" class="hover:text-indigo-600 transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-users-viewfinder"></i> Candidate Pool
+          </button>
+          <button onclick="openEmployerChatModal()" class="hover:text-indigo-600 transition-colors flex items-center gap-1.5">
+            <i class="fa-regular fa-comments"></i> Inquiries
+          </button>
+        </nav>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2.5">
+        <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all border border-blue-200">
+          <i class="fa-solid fa-user-graduate"></i> Candidate Portal
+        </a>
+
+        <!-- Notifications -->
+        <div class="relative">
+          <button onclick="toggleEmployerNotifications(event)" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all relative">
+            <i class="fa-regular fa-bell text-sm"></i>
+            <span id="empNotifBadge" class="absolute top-0 right-0 w-3.5 h-3.5 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">2</span>
+          </button>
+
+          <div id="empNotifDropdown" class="hidden absolute right-0 mt-3 w-72 sm:w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100 mb-2">
+              <span class="text-xs font-bold text-slate-900">Live Recruiter Feed</span>
+              <span class="text-[10px] text-indigo-600 font-bold cursor-pointer" onclick="clearEmpNotifications()">Clear</span>
+            </div>
+            <div class="space-y-2 text-xs" id="empNotifList">
+              <div class="p-2.5 bg-indigo-50/70 rounded-xl border border-indigo-100">
+                <p class="font-bold text-slate-900">Application Sync Active</p>
+                <p class="text-slate-600 text-[11px]">Candidates applying from Job Portal will show in real-time.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Avatar -->
+        <div class="relative">
+          <button onclick="toggleCompanyDropdown(event)" class="flex items-center gap-1.5 p-1 rounded-full hover:bg-slate-100 border border-slate-200 transition-all">
+            <div id="companyNavAvatar" class="w-7 h-7 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center">
+              A
+            </div>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 pr-1 hidden sm:inline-block"></i>
+          </button>
+
+          <div id="companyDropdown" class="hidden absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 p-4">
+            <div class="pb-3 border-b border-slate-100">
+              <h4 id="dropdownCompName" class="text-xs font-bold text-slate-900 truncate">Apex Technologies</h4>
+              <p id="dropdownCompEmail" class="text-[11px] text-slate-500 truncate">hr@apextech.io</p>
+            </div>
+            <div class="py-2 space-y-1 text-xs">
+              <button onclick="toggleCompanyModal(true)" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 font-semibold text-slate-700 flex items-center gap-2">
+                <i class="fa-regular fa-building text-slate-400"></i> Edit Company Profile
+              </button>
+              <a href="index.html" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 font-semibold text-slate-700 flex sm:hidden items-center gap-2">
+                <i class="fa-solid fa-user-graduate text-slate-400"></i> Candidate Portal
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SEARCH BAR ================= -->
+  <section class="bg-white border-b border-slate-200 py-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+        <div class="sm:col-span-6 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+          <input 
+            type="text" 
+            id="talentSearchInput" 
+            oninput="filterTalentGrid()" 
+            placeholder="Search candidates by name, skill, or role..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-600 focus:outline-none focus:bg-white"
+          />
+        </div>
+        <div class="sm:col-span-3">
+          <select id="talentDomainSelect" onchange="filterTalentGrid()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+            <option value="all">All Domains</option>
+            <option value="IT / Tech">IT / Tech Engineers</option>
+            <option value="Non-Tech">Non-Tech / Corporate</option>
+          </select>
+        </div>
+        <div class="sm:col-span-3">
+          <select id="talentNoticeSelect" onchange="filterTalentGrid()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+            <option value="all">All Notice Periods</option>
+            <option value="Immediate">Immediate Joiners</option>
+            <option value="15 Days">15 Days Notice</option>
+            <option value="30 Days">30 Days Notice</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MAIN RECRUITMENT DESK ================= -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Left Column: Post Requirement Form -->
+      <section class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+          <div>
+            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Hiring Mandate</span>
+            <h3 class="text-base font-bold text-slate-900">Post New Role</h3>
+          </div>
+          <span class="text-[10px] font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg">Recruiter Active</span>
+        </div>
+
+        <form onsubmit="handleEmployerRequirementSubmit(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Position Title *</label>
+            <input type="text" id="postTitle" required placeholder="e.g. Senior Frontend React Developer" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Domain *</label>
+              <select id="postDomain" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+                <option value="IT">IT / Tech</option>
+                <option value="Non-Tech">Non-Tech</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Work Mode *</label>
+              <select id="postMode" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-indigo-600 focus:outline-none">
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Onsite">Onsite</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Budget / CTC *</label>
+              <input type="text" id="postBudget" required placeholder="e.g. ₹12 - 18 LPA" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Experience *</label>
+              <input type="text" id="postExp" required placeholder="e.g. 3 - 5 Years" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mandatory Skills & Responsibilities *</label>
+            <textarea id="postSkills" rows="3" required placeholder="Mention skills (e.g. React, Next.js, Redux)..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-sm flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-paper-plane text-[10px]"></i> Deploy Mandate
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Column: Tabs between Received Applications & Vetted Pool -->
+      <section class="lg:col-span-7 space-y-4">
+        
+        <!-- Toggle Tabs -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <div class="flex items-center gap-3">
+            <button onclick="switchEmployerTab('applications')" id="tabBtnApps" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition-all">
+              📥 Received Applications (<span id="receivedAppCount">0</span>)
+            </button>
+            <button onclick="switchEmployerTab('talent')" id="tabBtnTalent" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition-all">
+              👥 Vetted Talent Pool
+            </button>
+          </div>
+          <span class="text-xs font-semibold text-slate-500" id="currentTabLabel">Live from Job Portal</span>
+        </div>
+
+        <!-- Container 1: Live Applications from Job Portal -->
+        <div id="receivedApplicationsView" class="space-y-3">
+          <!-- JS Dynamic Received Apps -->
+        </div>
+
+        <!-- Container 2: General Vetted Talent Pool -->
+        <div id="vettedTalentView" class="space-y-3 hidden">
+          <!-- JS Dynamic Candidates -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= CANDIDATE DIRECT INQUIRIES CHAT MODAL ================= -->
+  <div id="empChatModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-2 sm:p-6">
+    <div class="bg-white rounded-2xl max-w-4xl w-full h-[90vh] sm:h-[600px] shadow-2xl relative border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+      
+      <button onclick="closeEmployerChatModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 z-10 p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Left Sidebar: Candidate Threads -->
+      <div class="w-full md:w-80 bg-slate-50 border-r border-slate-200 flex flex-col h-36 md:h-full shrink-0">
+        <div class="p-3 border-b border-slate-200 bg-white">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Direct Inquiries</h3>
+        </div>
+        <div id="empThreadsList" class="flex-1 overflow-y-auto p-2 space-y-1"></div>
+      </div>
+
+      <!-- Right Window: Active Chat Room -->
+      <div class="flex-1 flex flex-col h-full bg-white">
+        <div class="p-3 sm:p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+          <div class="flex items-center gap-2.5">
+            <div id="activeCandAvatar" class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center">
+              K
+            </div>
+            <div>
+              <h4 id="activeCandName" class="text-xs font-bold text-slate-900">Candidate Name</h4>
+              <p id="activeCandRole" class="text-[10px] text-slate-500 truncate max-w-[200px]">Role Discussion</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="activeCandMessagesContainer" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs"></div>
+
+        <form onsubmit="handleSendEmployerMessage(event)" class="p-2.5 border-t border-slate-200 flex gap-2 bg-white">
+          <input 
+            type="text" 
+            id="empChatInputBox" 
+            placeholder="Write interview proposal to candidate..." 
+            class="flex-1 px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-indigo-600"
+          />
+          <button type="submit" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1">
+            <i class="fa-solid fa-paper-plane text-[10px]"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= COMPANY PROFILE MODAL ================= -->
+  <div id="companyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="toggleCompanyModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-slate-900">Company Organization Details</h3>
+        <p class="text-xs text-slate-500">Recruiter identification for candidates.</p>
+      </div>
+
+      <form onsubmit="saveCompanyProfile(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Company Legal Name *</label>
+          <input type="text" id="editCompName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Official Website URL *</label>
+            <input type="text" id="editCompUrl" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">HR Email *</label>
+            <input type="email" id="editCompEmail" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all">
+          Save Company Info
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MOBILE APP-STYLE BOTTOM NAVBAR ================= -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-6 py-2 flex items-center justify-between shadow-lg">
+    <button onclick="switchEmployerTab('applications')" class="flex flex-col items-center gap-1 text-indigo-600">
+      <i class="fa-solid fa-inbox text-base"></i>
+      <span class="text-[10px] font-bold">Applications</span>
+    </button>
+    <button onclick="switchEmployerTab('talent')" class="flex flex-col items-center gap-1 text-slate-500 hover:text-indigo-600">
+      <i class="fa-solid fa-users-viewfinder text-base"></i>
+      <span class="text-[10px] font-semibold">Talent Pool</span>
+    </button>
+    <button onclick="openEmployerChatModal()" class="flex flex-col items-center gap-1 text-slate-500 hover:text-indigo-600">
+      <i class="fa-regular fa-comments text-base"></i>
+      <span class="text-[10px] font-semibold">Messages</span>
+    </button>
+    <button onclick="toggleCompanyModal(true)" class="flex flex-col items-center gap-1 text-slate-500 hover:text-indigo-600">
+      <i class="fa-regular fa-building text-base"></i>
+      <span class="text-[10px] font-semibold">Profile</span>
+    </button>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-[11px] text-slate-500 text-center">
+    &copy; 2026 Shahak Talent Solution. Employer Recruitment Portal.
+  </footer>
+
+  <!-- ================= JAVASCRIPT APP LOGIC ================= -->
+  <script>
+    const defaultCompany = {
+      name: "Apex Technologies",
+      url: "https://apextech.io",
+      email: "hr@apextech.io"
+    };
+
+    let companyProfile = JSON.parse(localStorage.getItem('comp_profile')) || defaultCompany;
+    let candidateChats = JSON.parse(localStorage.getItem('emp_candidate_chats')) || {};
+    let activeCandidateKey = null;
+
+    const initialVettedTalent = [
+      { id: "cand_1", name: "Vikas Sharma", role: "Senior Frontend Engineer", domain: "IT / Tech", exp: "4.5 Yrs", ctc: "₹14 LPA", notice: "Immediate", skills: ["React.js", "Next.js", "Redux", "Tailwind CSS"] },
+      { id: "cand_2", name: "Sneha Verma", role: "Corporate Sales Manager", domain: "Non-Tech", exp: "3 Yrs", ctc: "₹7.5 LPA", notice: "15 Days", skills: ["B2B SaaS", "Lead Generation", "Client Pitching"] },
+      { id: "cand_3", name: "Aman Gupta", role: "DevOps & Cloud Engineer", domain: "IT / Tech", exp: "5 Yrs", ctc: "₹20 LPA", notice: "Immediate", skills: ["AWS", "Docker", "Kubernetes", "CI/CD"] }
+    ];
+
+    function initEmployerUI() {
+      const initial = companyProfile.name.charAt(0).toUpperCase();
+      document.getElementById('companyNavAvatar').innerText = initial;
+      document.getElementById('dropdownCompName').innerText = companyProfile.name;
+      document.getElementById('dropdownCompEmail').innerText = companyProfile.email;
+
+      document.getElementById('editCompName').value = companyProfile.name;
+      document.getElementById('editCompUrl').value = companyProfile.url;
+      document.getElementById('editCompEmail').value = companyProfile.email;
+
+      renderReceivedApplications();
+      renderVettedTalent(initialVettedTalent);
+    }
+
+    // ================= LIVE RECEIVED APPLICATIONS DISPLAY =================
+    function renderReceivedApplications() {
+      const apps = JSON.parse(localStorage.getItem('employer_received_apps')) || [];
+      const container = document.getElementById('receivedApplicationsView');
+      
+      document.getElementById('receivedAppCount').innerText = apps.length;
+      document.getElementById('receivedAppCountNav').innerText = apps.length;
+
+      if (apps.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200">
+            <i class="fa-regular fa-folder-open text-2xl mb-1 block"></i>
+            No applications received yet. Go to <b>Candidate Portal (index.html)</b> and click <b>Apply</b> on any job to test live sync.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = apps.map(app => `
+        <div class="bg-white border border-indigo-200 rounded-2xl p-4 shadow-sm hover:border-indigo-400 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                  <h4 class="text-sm font-bold text-slate-900">${app.candidateName}</h4>
+                  <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">${app.candidateDomain}</span>
+                </div>
+                <p class="text-xs text-slate-600 font-semibold">${app.candidateRole} • ${app.candidateExp} Exp</p>
+                <div class="text-[11px] text-indigo-600 font-bold mt-1">
+                  Applied for: <span class="text-slate-800">${app.appliedForRole} (${app.company})</span>
+                </div>
+              </div>
+
+              <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full shrink-0">
+                ${app.appliedAt}
+              </span>
+            </div>
+
+            <div class="text-[11px] text-slate-500 my-2 bg-slate-50 p-2 rounded-xl border border-slate-100">
+              <b>Skills:</b> ${app.candidateSkills}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+            <button onclick="shortlistCandidate('${app.candidateName}', '${app.appliedForRole}')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+              <i class="fa-solid fa-calendar-check text-[10px]"></i> Schedule Slot
+            </button>
+
+            <button onclick="startCandidateChatFromApp('${app.candidateName}', '${app.candidateRole}')" class="w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+              <i class="fa-regular fa-comment-dots text-xs"></i> Direct Chat
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderVettedTalent(list) {
+      const container = document.getElementById('vettedTalentView');
+      container.innerHTML = list.map(c => `
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <h4 class="text-sm font-bold text-slate-900">${c.name}</h4>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">${c.domain}</span>
+              </div>
+              <p class="text-xs text-slate-600 font-semibold">${c.role} • ${c.exp}</p>
+            </div>
+            <span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">${c.notice} Joiner</span>
+          </div>
+          <div class="flex flex-wrap gap-1 my-2">
+            ${c.skills.map(s => `<span class="text-[9px] font-medium bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">${s}</span>`).join('')}
+          </div>
+          <button onclick="shortlistCandidate('${c.name}', '${c.role}')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all">
+            Schedule Interview
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function switchEmployerTab(tab) {
+      const appsView = document.getElementById('receivedApplicationsView');
+      const talentView = document.getElementById('vettedTalentView');
+      const tabBtnApps = document.getElementById('tabBtnApps');
+      const tabBtnTalent = document.getElementById('tabBtnTalent');
+
+      if (tab === 'applications') {
+        appsView.classList.remove('hidden');
+        talentView.classList.add('hidden');
+        tabBtnApps.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition-all";
+        tabBtnTalent.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition-all";
+      } else {
+        appsView.classList.add('hidden');
+        talentView.classList.remove('hidden');
+        tabBtnTalent.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition-all";
+        tabBtnApps.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 transition-all";
+      }
+    }
+
+    function shortlistCandidate(name, role) {
+      alert(`✅ Interview slot request dispatched for ${name} (${role})!\nDetails forwarded to Shahak coordination team.`);
+    }
+
+    function startCandidateChatFromApp(name, role) {
+      const key = "user_khilendra";
+      activeCandidateKey = key;
+      if (!candidateChats[key]) {
+        candidateChats[key] = {
+          name: name,
+          role: role,
+          messages: [
+            {
+              sender: "candidate",
+              text: `Hello, I submitted my application for ${role}. Looking forward to discussing this opportunity.`,
+              time: "Just now"
+            }
+          ]
+        };
+        localStorage.setItem('emp_candidate_chats', JSON.stringify(candidateChats));
+      }
+      openEmployerChatModal();
+      selectCandidateThread(key);
+    }
+
+    function openEmployerChatModal() {
+      const modal = document.getElementById('empChatModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      renderCandidateThreadsList();
+
+      const keys = Object.keys(candidateChats);
+      if (!activeCandidateKey && keys.length > 0) {
+        selectCandidateThread(keys[0]);
+      }
+    }
+
+    function closeEmployerChatModal() {
+      document.getElementById('empChatModal').classList.add('hidden');
+      document.getElementById('empChatModal').classList.remove('flex');
+    }
+
+    function renderCandidateThreadsList() {
+      const container = document.getElementById('empThreadsList');
+      const keys = Object.keys(candidateChats);
+
+      if (keys.length === 0) {
+        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">No candidate messages yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = keys.map(key => {
+        const item = candidateChats[key];
+        const isActive = (key === activeCandidateKey);
+        return `
+          <div onclick="selectCandidateThread('${key}')" class="p-2 rounded-xl cursor-pointer transition-all ${isActive ? 'bg-indigo-100/80 border border-indigo-200' : 'hover:bg-slate-100'}">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                ${item.name.charAt(0)}
+              </div>
+              <div class="overflow-hidden text-left">
+                <div class="text-xs font-bold text-slate-900 truncate">${item.name}</div>
+                <div class="text-[9px] text-slate-500 truncate">${item.role}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectCandidateThread(key) {
+      activeCandidateKey = key;
+      renderCandidateThreadsList();
+
+      const chat = candidateChats[key];
+      document.getElementById('activeCandAvatar').innerText = chat.name.charAt(0);
+      document.getElementById('activeCandName').innerText = chat.name;
+      document.getElementById('activeCandRole').innerText = chat.role;
+
+      const msgContainer = document.getElementById('activeCandMessagesContainer');
+      msgContainer.innerHTML = chat.messages.map(m => {
+        if (m.sender === 'company') {
+          return `
+            <div class="flex justify-end">
+              <div class="bg-indigo-600 text-white p-2.5 rounded-2xl rounded-tr-none max-w-[85%] text-xs shadow-sm">
+                ${m.text}
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="flex items-start gap-2">
+              <div class="bg-white border border-slate-200 p-2.5 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-slate-800">
+                <span class="block font-bold text-indigo-600 mb-0.5 text-[10px]">${chat.name}:</span>
+                ${m.text}
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    function handleSendEmployerMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('empChatInputBox');
+      const text = input.value.trim();
+      if (!text || !activeCandidateKey) return;
+
+      candidateChats[activeCandidateKey].messages.push({
+        sender: "company",
+        text: text,
+        time: "Just now"
+      });
+
+      input.value = "";
+      selectCandidateThread(activeCandidateKey);
+
+      setTimeout(() => {
+        candidateChats[activeCandidateKey].messages.push({
+          sender: "candidate",
+          text: "Thank you for the message! I am available for this slot.",
+          time: "Just now"
+        });
+        localStorage.setItem('emp_candidate_chats', JSON.stringify(candidateChats));
+        selectCandidateThread(activeCandidateKey);
+      }, 700);
+    }
+
+    function handleEmployerRequirementSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('postTitle').value;
+      alert(`🚀 Role "${title}" deployed to candidate streams!`);
+      e.target.reset();
+    }
+
+    function toggleCompanyDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('companyDropdown').classList.toggle('hidden');
+      document.getElementById('empNotifDropdown').classList.add('hidden');
+    }
+
+    function toggleEmployerNotifications(e) {
+      e.stopPropagation();
+      document.getElementById('empNotifDropdown').classList.toggle('hidden');
+      document.getElementById('companyDropdown').classList.add('hidden');
+    }
+
+    function closeAllPopups() {
+      document.getElementById('companyDropdown').classList.add('hidden');
+      document.getElementById('empNotifDropdown').classList.add('hidden');
+    }
+
+    function toggleCompanyModal(show) {
+      document.getElementById('companyModal').className = show ? "fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" : "hidden";
+    }
+
+    function saveCompanyProfile(e) {
+      e.preventDefault();
+      companyProfile = {
+        name: document.getElementById('editCompName').value,
+        url: document.getElementById('editCompUrl').value,
+        email: document.getElementById('editCompEmail').value
+      };
+      localStorage.setItem('comp_profile', JSON.stringify(companyProfile));
+      initEmployerUI();
+      toggleCompanyModal(false);
+      alert("✅ Company Profile updated!");
+    }
+
+    initEmployerUI();
+  </script>
+</body>
+</html>

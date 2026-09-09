@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shahak Talent Solution | Candidate Job Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between pb-20 md:pb-0" onclick="closeAllPopups(event)">
+
+  <!-- ================= TOP NAVBAR ================= -->
+  <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-base sm:text-lg shadow-sm">
+            S
+          </div>
+          <div>
+            <span class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none block">Shahak</span>
+            <span class="text-[9px] sm:text-[10px] font-bold tracking-wider text-blue-600 uppercase">Candidate Desk</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-6 font-semibold text-xs text-slate-600">
+          <a href="#jobs-feed" class="text-blue-600 flex items-center gap-1.5"><i class="fa-solid fa-briefcase"></i> Explore Jobs</a>
+          <button onclick="openChatModal()" class="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+            <i class="fa-regular fa-comments"></i> Messages
+          </button>
+          <button onclick="showApplicationsModal()" class="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-paper-plane"></i> Applied (<span id="appliedCountNav">0</span>)
+          </button>
+        </nav>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2.5">
+        <a href="hiring.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-lg transition-all border border-slate-200">
+          <i class="fa-solid fa-building text-slate-500"></i> Employer Desk
+        </a>
+
+        <!-- Notification -->
+        <div class="relative">
+          <button onclick="toggleNotifications(event)" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all relative">
+            <i class="fa-regular fa-bell text-sm"></i>
+            <span id="notifBadge" class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">1</span>
+          </button>
+
+          <div id="notifDropdown" class="hidden absolute right-0 mt-3 w-72 sm:w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100 mb-2">
+              <span class="text-xs font-bold text-slate-900">Activity & Alerts</span>
+              <span class="text-[10px] text-blue-600 font-bold cursor-pointer" onclick="clearNotifications()">Clear</span>
+            </div>
+            <div class="space-y-2 text-xs" id="notifList">
+              <div class="p-2.5 bg-blue-50/70 rounded-xl border border-blue-100">
+                <p class="font-bold text-slate-900">System Ready</p>
+                <p class="text-slate-600 text-[11px]">Apply to roles or chat directly with company HRs.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Avatar -->
+        <div class="relative">
+          <button onclick="toggleProfileDropdown(event)" class="flex items-center gap-1.5 p-1 rounded-full hover:bg-slate-100 border border-slate-200 transition-all">
+            <div id="navAvatar" class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
+              K
+            </div>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 pr-1 hidden sm:inline-block"></i>
+          </button>
+
+          <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 p-4">
+            <div class="pb-3 border-b border-slate-100">
+              <h4 id="dropdownName" class="text-xs font-bold text-slate-900 truncate">Khilendra Pal</h4>
+              <p id="dropdownRole" class="text-[11px] text-slate-500 truncate">Full Stack Developer</p>
+            </div>
+            <div class="py-2 space-y-1 text-xs">
+              <button onclick="toggleProfileModal(true)" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 font-semibold text-slate-700 flex items-center gap-2">
+                <i class="fa-regular fa-user text-slate-400"></i> Edit Profile
+              </button>
+              <button onclick="showApplicationsModal()" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 font-semibold text-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Applied Jobs
+              </button>
+              <a href="hiring.html" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 font-semibold text-slate-700 flex sm:hidden items-center gap-2">
+                <i class="fa-solid fa-building text-slate-400"></i> Employer Desk
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SEARCH BAR ================= -->
+  <section class="bg-white border-b border-slate-200 py-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Mobile Single Row Input + Filter -->
+      <div class="flex items-center gap-2 sm:hidden">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+          <input 
+            type="text" 
+            id="mobileSearchInput" 
+            oninput="syncAndFilterJobs(this.value)" 
+            placeholder="Search role, skills..." 
+            class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none focus:bg-white"
+          />
+        </div>
+        <button onclick="toggleFilterSheet(true)" class="px-3 py-2 bg-blue-50 border border-blue-200 text-blue-700 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+          <span id="activeFilterBadge" class="hidden w-2 h-2 rounded-full bg-blue-600"></span>
+        </button>
+      </div>
+
+      <!-- Desktop View -->
+      <div class="hidden sm:grid sm:grid-cols-12 gap-3">
+        <div class="sm:col-span-6 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+          <input 
+            type="text" 
+            id="jobSearchInput" 
+            oninput="syncAndFilterJobs(this.value)" 
+            placeholder="Search role, skills (React, Sales)..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none focus:bg-white"
+          />
+        </div>
+        <div class="sm:col-span-3">
+          <select id="domainSelect" onchange="filterCandidateJobs()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+            <option value="all">All Domains (IT & Non-Tech)</option>
+            <option value="IT">IT / Tech Software</option>
+            <option value="Non-Tech">Non-Tech / Corporate</option>
+          </select>
+        </div>
+        <div class="sm:col-span-3">
+          <select id="workModeSelect" onchange="filterCandidateJobs()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+            <option value="all">All Work Modes</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Onsite">Onsite</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= JOBS FEED ================= -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full" id="jobs-feed">
+    
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Active Opportunities</h2>
+        <p class="text-[11px] sm:text-xs text-slate-500">Apply or message directly to connect with employers.</p>
+      </div>
+      <span class="text-xs font-bold text-slate-500 bg-white border border-slate-200 px-2 py-1 rounded-lg" id="jobCountLabel">6 Positions</span>
+    </div>
+
+    <!-- Vertical Grid for Mobile & Desktop -->
+    <div id="jobCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"></div>
+  </main>
+
+  <!-- ================= MOBILE BOTTOM SHEET FILTER MODAL ================= -->
+  <div id="filterSheet" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl max-w-md w-full p-5 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="text-sm font-bold text-slate-900">Filter Openings</h3>
+        <button onclick="toggleFilterSheet(false)" class="text-slate-400 hover:text-slate-700 p-1">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1.5">Domain</label>
+          <select id="mobileDomainSelect" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+            <option value="all">All Domains (IT & Non-Tech)</option>
+            <option value="IT">IT / Tech Software</option>
+            <option value="Non-Tech">Non-Tech / Corporate</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1.5">Work Mode</label>
+          <select id="mobileModeSelect" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-700 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+            <option value="all">All Work Modes</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Onsite">Onsite</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button onclick="resetMobileFilters()" class="py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl">
+            Reset
+          </button>
+          <button onclick="applyMobileFilters()" class="py-2.5 bg-blue-600 text-white font-bold rounded-xl">
+            Apply Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MOBILE BOTTOM NAVBAR ================= -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-6 py-2 flex items-center justify-between shadow-lg">
+    <a href="#jobs-feed" class="flex flex-col items-center gap-1 text-blue-600">
+      <i class="fa-solid fa-briefcase text-base"></i>
+      <span class="text-[10px] font-bold">Jobs</span>
+    </a>
+    <button onclick="openChatModal()" class="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-600">
+      <i class="fa-regular fa-comments text-base"></i>
+      <span class="text-[10px] font-semibold">Messages</span>
+    </button>
+    <button onclick="showApplicationsModal()" class="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-600">
+      <i class="fa-solid fa-paper-plane text-base"></i>
+      <span class="text-[10px] font-semibold">Applied</span>
+    </button>
+    <button onclick="toggleProfileModal(true)" class="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-600">
+      <i class="fa-regular fa-user text-base"></i>
+      <span class="text-[10px] font-semibold">Profile</span>
+    </button>
+  </div>
+
+  <!-- ================= CHAT MODAL ================= -->
+  <div id="chatModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-2 sm:p-6">
+    <div class="bg-white rounded-2xl max-w-4xl w-full h-[90vh] sm:h-[600px] shadow-2xl relative border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+      
+      <button onclick="closeChatModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 z-10 p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Left Sidebar: Company List -->
+      <div class="w-full md:w-80 bg-slate-50 border-r border-slate-200 flex flex-col h-36 md:h-full shrink-0">
+        <div class="p-3 border-b border-slate-200 bg-white">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Company Chats</h3>
+        </div>
+        <div id="threadsList" class="flex-1 overflow-y-auto p-2 space-y-1"></div>
+      </div>
+
+      <!-- Right Active Window -->
+      <div class="flex-1 flex flex-col h-full bg-white">
+        <div class="p-3 sm:p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+          <div class="flex items-center gap-2.5">
+            <div id="activeChatAvatar" class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
+              C
+            </div>
+            <div>
+              <h4 id="activeChatCompany" class="text-xs font-bold text-slate-900">Company</h4>
+              <p id="activeChatRole" class="text-[10px] text-slate-500 truncate max-w-[200px]">Position</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="activeMessagesContainer" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs"></div>
+
+        <form onsubmit="handleSendCustomMessage(event)" class="p-2.5 border-t border-slate-200 flex gap-2 bg-white">
+          <input 
+            type="text" 
+            id="chatInputBox" 
+            placeholder="Reply to company..." 
+            class="flex-1 px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
+          />
+          <button type="submit" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1">
+            <i class="fa-solid fa-paper-plane text-[10px]"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= EDIT PROFILE MODAL ================= -->
+  <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="toggleProfileModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-slate-900">Candidate Profile Details</h3>
+        <p class="text-xs text-slate-500">Shared automatically with recruiters.</p>
+      </div>
+
+      <form onsubmit="saveCandidateProfile(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="candName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Domain</label>
+            <select id="candDomain" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none">
+              <option value="IT / Tech">IT / Tech</option>
+              <option value="Non-Tech">Non-Tech</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Experience</label>
+            <input type="text" id="candExp" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Job Designation</label>
+          <input type="text" id="candTitle" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Key Skills</label>
+          <input type="text" id="candSkills" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none" />
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all">
+          Save Profile
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= APPLIED JOBS MODAL ================= -->
+  <div id="appliedModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl relative">
+      <button onclick="toggleAppliedModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 class="text-base font-bold text-slate-900 mb-1">Application Pipeline</h3>
+      <div id="appliedJobsList" class="space-y-2 mt-4 max-h-80 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-[11px] text-slate-500 text-center">
+    &copy; 2026 Shahak Talent Solution. Candidate Job Portal.
+  </footer>
+
+  <!-- ================= JAVASCRIPT APP LOGIC ================= -->
+  <script>
+    const defaultProfile = {
+      id: "user_khilendra",
+      name: "Khilendra Pal",
+      domain: "IT / Tech",
+      exp: "3 Years",
+      title: "Full Stack Developer",
+      skills: "React, Node.js, TypeScript, Next.js, Tailwind",
+      ctc: "₹12 - 15 LPA",
+      notice: "Immediate"
+    };
+
+    let candidateProfile = JSON.parse(localStorage.getItem('cand_profile')) || defaultProfile;
+    let appliedJobs = JSON.parse(localStorage.getItem('applied_jobs')) || [];
+    let companyChats = JSON.parse(localStorage.getItem('company_chats')) || {};
+    let activeCompanyKey = null;
+
+    const jobsDataset = [
+      {
+        id: "comp_1",
+        title: "Full Stack React / Node Developer",
+        domain: "IT",
+        company: "CloudScale Systems",
+        location: "Bengaluru",
+        mode: "Hybrid",
+        ctc: "₹12 - 18 LPA",
+        exp: "2 - 5 Yrs",
+        skills: ["React.js", "Node.js", "MongoDB", "Express", "Tailwind"]
+      },
+      {
+        id: "comp_2",
+        title: "Inside Sales & Business Dev Manager",
+        domain: "Non-Tech",
+        company: "NexGen Corp",
+        location: "Delhi NCR",
+        mode: "Onsite",
+        ctc: "₹5 - 8.5 LPA",
+        exp: "1 - 3 Yrs",
+        skills: ["B2B Sales", "Lead Sourcing", "Negotiation", "CRM"]
+      },
+      {
+        id: "comp_3",
+        title: "Senior DevOps & Cloud Engineer",
+        domain: "IT",
+        company: "Innovate AI",
+        location: "Remote",
+        mode: "Remote",
+        ctc: "₹16 - 24 LPA",
+        exp: "3 - 6 Yrs",
+        skills: ["AWS", "Docker", "Kubernetes", "CI/CD", "Terraform"]
+      },
+      {
+        id: "comp_4",
+        title: "Talent Acquisition / HR Specialist",
+        domain: "Non-Tech",
+        company: "Shahak Talent Hub",
+        location: "Pune",
+        mode: "Hybrid",
+        ctc: "₹5.5 - 9 LPA",
+        exp: "2 - 4 Yrs",
+        skills: ["HR Operations", "Technical Screening", "Sourcing", "Payroll"]
+      },
+      {
+        id: "comp_5",
+        title: "Frontend UI/UX React Engineer",
+        domain: "IT",
+        company: "Fintech Nexus",
+        location: "Remote",
+        mode: "Remote",
+        ctc: "₹9 - 14 LPA",
+        exp: "1 - 3 Yrs",
+        skills: ["React", "JavaScript", "Redux", "Tailwind CSS", "Figma"]
+      },
+      {
+        id: "comp_6",
+        title: "Performance Digital Marketing Lead",
+        domain: "Non-Tech",
+        company: "GrowthBridge",
+        location: "Gurugram",
+        mode: "Onsite",
+        ctc: "₹7 - 11 LPA",
+        exp: "2 - 5 Yrs",
+        skills: ["Meta Ads", "Google Ads", "SEO", "Analytics"]
+      }
+    ];
+
+    function initUI() {
+      const initial = candidateProfile.name.charAt(0).toUpperCase();
+      document.getElementById('navAvatar').innerText = initial;
+      document.getElementById('dropdownName').innerText = candidateProfile.name;
+      document.getElementById('dropdownRole').innerText = candidateProfile.title;
+      document.getElementById('appliedCountNav').innerText = appliedJobs.length;
+
+      document.getElementById('candName').value = candidateProfile.name;
+      document.getElementById('candDomain').value = candidateProfile.domain;
+      document.getElementById('candExp').value = candidateProfile.exp;
+      document.getElementById('candTitle').value = candidateProfile.title;
+      document.getElementById('candSkills').value = candidateProfile.skills;
+
+      renderJobs(jobsDataset);
+    }
+
+    function renderJobs(list) {
+      const container = document.getElementById('jobCardsGrid');
+      document.getElementById('jobCountLabel').innerText = `${list.length} Positions`;
+
+      container.innerHTML = list.map(job => {
+        const isApplied = appliedJobs.some(a => a.title === job.title);
+        return `
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:border-blue-300 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2 sm:mb-3">
+                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${job.domain === 'IT' ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700'}">
+                  ${job.domain === 'IT' ? 'IT / Tech' : 'Non-Tech'}
+                </span>
+                <span class="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">${job.mode}</span>
+              </div>
+
+              <h4 class="text-sm sm:text-base font-bold text-slate-900 mb-1 leading-snug">${job.title}</h4>
+              <div class="text-[11px] sm:text-xs text-slate-500 mb-3 font-medium">${job.company} • ${job.location}</div>
+
+              <div class="text-[11px] sm:text-xs font-semibold text-slate-700 space-y-0.5 mb-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <div><span class="text-slate-400 font-normal">Package:</span> ${job.ctc}</div>
+                <div><span class="text-slate-400 font-normal">Experience:</span> ${job.exp}</div>
+              </div>
+
+              <div class="flex flex-wrap gap-1 mb-4">
+                ${job.skills.map(s => `<span class="text-[9px] sm:text-[10px] font-medium bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">${s}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+              <button onclick="applyToJob('${job.id}')" class="w-full py-2 ${isApplied ? 'bg-emerald-600 text-white' : 'bg-slate-900 hover:bg-blue-600 text-white'} rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+                ${isApplied ? '<i class="fa-solid fa-check"></i> Applied' : '<i class="fa-solid fa-paper-plane text-[9px]"></i> Apply'}
+              </button>
+
+              <button onclick="startIndividualChat('${job.id}')" class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+                <i class="fa-regular fa-comment-dots text-xs"></i> Message
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function syncAndFilterJobs(value) {
+      document.getElementById('jobSearchInput').value = value;
+      document.getElementById('mobileSearchInput').value = value;
+      filterCandidateJobs();
+    }
+
+    function filterCandidateJobs() {
+      const keyword = (document.getElementById('jobSearchInput').value || document.getElementById('mobileSearchInput').value).toLowerCase();
+      const domain = document.getElementById('domainSelect').value;
+      const mode = document.getElementById('workModeSelect').value;
+
+      const filtered = jobsDataset.filter(job => {
+        const matchesKey = job.title.toLowerCase().includes(keyword) || job.skills.some(s => s.toLowerCase().includes(keyword)) || job.company.toLowerCase().includes(keyword);
+        const matchesDomain = (domain === 'all') || (job.domain === domain);
+        const matchesMode = (mode === 'all') || (job.mode === mode);
+        return matchesKey && matchesDomain && matchesMode;
+      });
+
+      renderJobs(filtered);
+    }
+
+    function toggleFilterSheet(show) {
+      const sheet = document.getElementById('filterSheet');
+      sheet.className = show ? "fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" : "hidden";
+    }
+
+    function applyMobileFilters() {
+      const domain = document.getElementById('mobileDomainSelect').value;
+      const mode = document.getElementById('mobileModeSelect').value;
+      document.getElementById('domainSelect').value = domain;
+      document.getElementById('workModeSelect').value = mode;
+      document.getElementById('activeFilterBadge').classList.toggle('hidden', (domain === 'all' && mode === 'all'));
+      filterCandidateJobs();
+      toggleFilterSheet(false);
+    }
+
+    function resetMobileFilters() {
+      document.getElementById('mobileDomainSelect').value = 'all';
+      document.getElementById('mobileModeSelect').value = 'all';
+      document.getElementById('domainSelect').value = 'all';
+      document.getElementById('workModeSelect').value = 'all';
+      document.getElementById('activeFilterBadge').classList.add('hidden');
+      filterCandidateJobs();
+      toggleFilterSheet(false);
+    }
+
+    // ================= REAL CONNECTED APPLY LOGIC =================
+    function applyToJob(jobId) {
+      const job = jobsDataset.find(j => j.id === jobId);
+      if(appliedJobs.some(a => a.title === job.title)) {
+        alert("Already applied for this opening.");
+        return;
+      }
+
+      const newApp = {
+        title: job.title,
+        company: job.company,
+        date: "Just now",
+        status: "Application Submitted"
+      };
+      appliedJobs.unshift(newApp);
+      localStorage.setItem('applied_jobs', JSON.stringify(appliedJobs));
+
+      // Push to Employer's Shared Database
+      let employerApps = JSON.parse(localStorage.getItem('employer_received_apps')) || [];
+      employerApps.unshift({
+        id: Date.now(),
+        candidateName: candidateProfile.name,
+        candidateRole: candidateProfile.title,
+        candidateExp: candidateProfile.exp,
+        candidateSkills: candidateProfile.skills,
+        candidateDomain: candidateProfile.domain,
+        appliedForRole: job.title,
+        company: job.company,
+        status: "Under Review",
+        appliedAt: "Just now"
+      });
+      localStorage.setItem('employer_received_apps', JSON.stringify(employerApps));
+
+      initUI();
+      alert(`🎉 Applied Successfully!\nYour application for "${job.title}" is now visible on the Employer Desk.`);
+    }
+
+    // ================= REAL CONNECTED CHAT LOGIC =================
+    function startIndividualChat(jobId) {
+      const job = jobsDataset.find(j => j.id === jobId);
+      activeCompanyKey = jobId;
+
+      if (!companyChats[jobId]) {
+        companyChats[jobId] = {
+          company: job.company,
+          role: job.title,
+          messages: [
+            {
+              sender: "user",
+              text: `Hello, I am interested in the "${job.title}" role. Here is my profile: ${candidateProfile.title} (${candidateProfile.exp} experience, Skills: ${candidateProfile.skills}).`,
+              time: "Just now"
+            },
+            {
+              sender: "company",
+              text: `Hi ${candidateProfile.name}! We received your inquiry at ${job.company}. We are scheduling interviews for this week.`,
+              time: "Just now"
+            }
+          ]
+        };
+        localStorage.setItem('company_chats', JSON.stringify(companyChats));
+      }
+
+      // Also Sync with Employer Portal Chat Storage
+      let empChats = JSON.parse(localStorage.getItem('emp_candidate_chats')) || {};
+      if(!empChats[candidateProfile.id]) {
+        empChats[candidateProfile.id] = {
+          name: candidateProfile.name,
+          role: candidateProfile.title,
+          messages: [
+            {
+              sender: "candidate",
+              text: `Hello, I am inquiring about the ${job.title} opening. Looking forward to connecting.`,
+              time: "Just now"
+            }
+          ]
+        };
+        localStorage.setItem('emp_candidate_chats', JSON.stringify(empChats));
+      }
+
+      openChatModal();
+      selectThread(jobId);
+    }
+
+    function openChatModal() {
+      const modal = document.getElementById('chatModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      renderThreadsList();
+
+      const keys = Object.keys(companyChats);
+      if (!activeCompanyKey && keys.length > 0) {
+        selectThread(keys[0]);
+      }
+    }
+
+    function closeChatModal() {
+      document.getElementById('chatModal').classList.add('hidden');
+      document.getElementById('chatModal').classList.remove('flex');
+    }
+
+    function renderThreadsList() {
+      const container = document.getElementById('threadsList');
+      const keys = Object.keys(companyChats);
+
+      if (keys.length === 0) {
+        container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">No active messages.</div>`;
+        return;
+      }
+
+      container.innerHTML = keys.map(key => {
+        const item = companyChats[key];
+        const isActive = (key === activeCompanyKey);
+        return `
+          <div onclick="selectThread('${key}')" class="p-2 rounded-xl cursor-pointer transition-all ${isActive ? 'bg-blue-100/80 border border-blue-200' : 'hover:bg-slate-100'}">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                ${item.company.charAt(0)}
+              </div>
+              <div class="overflow-hidden text-left">
+                <div class="text-xs font-bold text-slate-900 truncate">${item.company}</div>
+                <div class="text-[9px] text-slate-500 truncate">${item.role}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectThread(key) {
+      activeCompanyKey = key;
+      renderThreadsList();
+
+      const chat = companyChats[key];
+      document.getElementById('activeChatAvatar').innerText = chat.company.charAt(0);
+      document.getElementById('activeChatCompany').innerText = chat.company;
+      document.getElementById('activeChatRole').innerText = chat.role;
+
+      const msgContainer = document.getElementById('activeMessagesContainer');
+      msgContainer.innerHTML = chat.messages.map(m => {
+        if (m.sender === 'user') {
+          return `
+            <div class="flex justify-end">
+              <div class="bg-blue-600 text-white p-2.5 rounded-2xl rounded-tr-none max-w-[85%] text-xs shadow-sm">
+                ${m.text}
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="flex items-start gap-2">
+              <div class="bg-white border border-slate-200 p-2.5 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-slate-800">
+                <span class="block font-bold text-blue-600 mb-0.5 text-[10px]">${chat.company}:</span>
+                ${m.text}
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    function handleSendCustomMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInputBox');
+      const text = input.value.trim();
+      if (!text || !activeCompanyKey) return;
+
+      companyChats[activeCompanyKey].messages.push({
+        sender: "user",
+        text: text,
+        time: "Just now"
+      });
+
+      input.value = "";
+      selectThread(activeCompanyKey);
+
+      setTimeout(() => {
+        companyChats[activeCompanyKey].messages.push({
+          sender: "company",
+          text: "Message received. Our recruitment coordinator will update your interview status.",
+          time: "Just now"
+        });
+        localStorage.setItem('company_chats', JSON.stringify(companyChats));
+        selectThread(activeCompanyKey);
+      }, 700);
+    }
+
+    function toggleProfileDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('profileDropdown').classList.toggle('hidden');
+      document.getElementById('notifDropdown').classList.add('hidden');
+    }
+
+    function toggleNotifications(e) {
+      e.stopPropagation();
+      document.getElementById('notifDropdown').classList.toggle('hidden');
+      document.getElementById('profileDropdown').classList.add('hidden');
+    }
+
+    function closeAllPopups() {
+      document.getElementById('profileDropdown').classList.add('hidden');
+      document.getElementById('notifDropdown').classList.add('hidden');
+    }
+
+    function toggleProfileModal(show) {
+      document.getElementById('profileModal').className = show ? "fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" : "hidden";
+    }
+
+    function saveCandidateProfile(e) {
+      e.preventDefault();
+      candidateProfile = {
+        id: "user_khilendra",
+        name: document.getElementById('candName').value,
+        domain: document.getElementById('candDomain').value,
+        exp: document.getElementById('candExp').value,
+        title: document.getElementById('candTitle').value,
+        skills: document.getElementById('candSkills').value,
+        ctc: "₹12 - 15 LPA",
+        notice: "Immediate"
+      };
+      localStorage.setItem('cand_profile', JSON.stringify(candidateProfile));
+      initUI();
+      toggleProfileModal(false);
+      alert("✅ Profile updated!");
+    }
+
+    function showApplicationsModal() {
+      const container = document.getElementById('appliedJobsList');
+      if(appliedJobs.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">No applications submitted yet.</div>`;
+      } else {
+        container.innerHTML = appliedJobs.map(app => `
+          <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+            <div>
+              <div class="font-bold text-slate-900">${app.title}</div>
+              <div class="text-[10px] text-slate-500">${app.company} • ${app.date}</div>
+            </div>
+            <span class="text-[9px] font-bold px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md">${app.status}</span>
+          </div>
+        `).join('');
+      }
+      document.getElementById('appliedModal').classList.remove('hidden');
+      document.getElementById('appliedModal').classList.add('flex');
+    }
+
+    function toggleAppliedModal(show) {
+      document.getElementById('appliedModal').classList.add('hidden');
+      document.getElementById('appliedModal').classList.remove('flex');
+    }
+
+    initUI();
+  </script>
+</body>
+</html>
